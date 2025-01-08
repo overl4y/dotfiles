@@ -21,17 +21,17 @@ return {
         local cmp = require('cmp')
         local cmp_lsp = require("cmp_nvim_lsp")
         local capabilities = vim.tbl_deep_extend(
-            "force",
-            {},
-            vim.lsp.protocol.make_client_capabilities(),
-            cmp_lsp.default_capabilities())
+        "force",
+        {},
+        vim.lsp.protocol.make_client_capabilities(),
+        cmp_lsp.default_capabilities())
+
 
         require("luasnip.loaders.from_vscode").lazy_load()
         require("mason").setup()
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "lua_ls",
-                "rust_analyzer",
                 "clangd",
             },
             handlers = {
@@ -96,8 +96,23 @@ return {
             })
         })
 
+        local symbols = { Error = "󰅙", Info = "󰋼", Hint = "󰌵", Warn = "" }
+
+        for name, icon in pairs(symbols) do
+            local hl = "DiagnosticSign" .. name
+            vim.fn.sign_define(hl, { text = icon, numhl = hl, texthl = hl })
+        end
+
         vim.diagnostic.config({
             -- update_in_insert = true,
+            signs = {
+                text = {
+                    [vim.diagnostic.severity.ERROR] = symbols['Error'],
+                    [vim.diagnostic.severity.WARN] = symbols['Warn'],
+                    [vim.diagnostic.severity.HINT] = symbols['Hint'],
+                    [vim.diagnostic.severity.INFO] = symbols['Info'],
+                }
+            },
             float = {
                 focusable = false,
                 style = "minimal",
