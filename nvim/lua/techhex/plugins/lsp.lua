@@ -26,9 +26,13 @@ return {
         vim.lsp.protocol.make_client_capabilities(),
         cmp_lsp.default_capabilities())
 
-
         require("luasnip.loaders.from_vscode").lazy_load()
-        require("mason").setup()
+        require("mason").setup({ -- for Roslyn Analyzer, use here de setup roslyn for Razor Pages
+            registries = {
+                'github:mason-org/mason-registry',
+                'github:crashdummyy/mason-registry',
+            },
+        })
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "lua_ls",
